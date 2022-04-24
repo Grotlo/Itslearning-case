@@ -64,7 +64,7 @@
 		</select>
 	</div>
 
-	{#if selectedMenu.list || selectedMenu.secondList && load}
+	{#if (selectedMenu.list || selectedMenu.secondList) && load}
 		<ul>
 			{#if selectedMenu.list}
 				{#each selectedMenu.list.filter(
@@ -75,7 +75,7 @@
 			{/if}
 
 			{#if selectedMenu.secondList}
-				<li class="message"><span>UPCOMING PLANS</span></li>
+				<li><span>UPCOMING PLANS</span></li>
 				{#each selectedMenu.secondList.filter(
 					menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
 					as course, index}
@@ -160,7 +160,7 @@
 		height: 0;
 		top: 0;
 		left: 0;
-		border-left: 2px solid #000;
+		border-left: 3px solid #000;
 	}
 
 	input[type="radio"]:checked + label::after {
@@ -208,7 +208,7 @@
 	}
 
 	/* clunky? brute force solution */
-	li.message {
+	li {
 		list-style-type: none;
 		text-align: center;
 		border-bottom: 1px solid #d4d4d4; 
@@ -216,7 +216,7 @@
 		margin: 2rem 0;
 	}
 
-	li.message > span {
+	li > span {
 		padding: 0 1rem;
 		background: var(--c-primary);
 		font-size: 0.75rem;
