@@ -1,38 +1,34 @@
 <script>
-  import { fly } from "svelte/transition";
 	import { onMount } from "svelte";
 	import { courses } from "./courses.js";
+	import ListItem from "./ListItem.svelte";
 
 	const withoutDatesCourses = [];
 	const pastCourses = [];
+	const upcomingCourses = [];
+	const currentCourses = [];
 
 	const todaysDate = new Date();
 
-	const currentCourses = courses.filter(course => {
-		if ((course.startDate && course.endDate) && (course.endDate > todaysDate)) {
-			return course;
-		} else if (!course.startDate && !course.endDate) {
-			withoutDatesCourses.push(course);
-		} else if (course.endDate < todaysDate) {
-			pastCourses.push(course);
-		}
-	});
+	courses.forEach(course => {
+		if (course.endDate < todaysDate) pastCourses.push(course);
+		if (!course.startDate && !course.endDate) withoutDatesCourses.push(course);
+		if (course.startDate < todaysDate && course.endDate > todaysDate) currentCourses.push(course);
+		if (course.startDate > todaysDate) upcomingCourses.push(course);
+	})
+
+	const sortCourses = (courses) => courses.sort((a,b) => a.startDate - b.startDate);
 
 	let menu = [
-		{ entry: "Current", list: currentCourses.sort((a, b) => a.startDate - b.startDate) },
-		{ entry: "Past", list: pastCourses.sort((a, b) => a.startDate - b.startDate) },
-		{ entry: "Without date", list: withoutDatesCourses.sort((a, b) => a.startDate - b.startDate) }
+		{ entry: "Current", list: sortCourses(currentCourses), secondList: sortCourses(upcomingCourses) },
+		{ entry: "Past", list: sortCourses(pastCourses) },
+		{ entry: "Without date", list: sortCourses(withoutDatesCourses) }
 	];
 
-	function formatDate(value) {
-		let date = new Date(value);
-    return date.getDate() + " " + date.toLocaleString('default', { month: 'short' });
-	}
+	$: selectedMenu = menu[0];
 
 	let searchCourses = "";
 	let courseSelections = [];
-
-	$: selectedMenu = menu[0];
 
 	let load = false;
 	onMount(() => load = true);
@@ -71,35 +67,24 @@
 		</select>
 	</div>
 
-	{#if selectedMenu.list && load}
+	{#if selectedMenu.list || selectedMenu.secondList && load}
 		<ul>
-			{#each selectedMenu.list.filter(
-				menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
-				as course, index}
-				<!-- {@const upcoming = course.startDate > todaysDate ? true : false}
-				{#if upcoming}
-					<p>Hallo</p>
-				{/if} -->
-				<li in:fly={{ delay: index * 100, duration: 150 }}>
-					<div>
-						<input type="checkbox" value={course} bind:group={courseSelections} />
-						<img src={course.imgSrc ? course.imgSrc : "fallback-img.avif"} alt={course.name} />
-					</div>
-					<div>
-						<h2>
-							{course.name} 
-							<span style="background-color: var(--tag-{course.tagColor})">{course.tag.toUpperCase()}</span>
-						</h2>
-						<p>{course.details}</p>
-						{#if course.startDate && course.endDate}
-							<span>
-								<img src="icons/calendar.svg" alt="calendar icon" />
-								{formatDate(course.startDate)}-{formatDate(course.endDate)}
-							</span>
-						{/if}
-					</div>
-				</li>
-			{/each}
+			{#if selectedMenu.list}
+				{#each selectedMenu.list.filter(
+					menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
+					as course, index}
+					<ListItem {index} {course} bind:courseSelections />
+				{/each}
+			{/if}
+
+			{#if selectedMenu.secondList}
+				<li class="message"><span>UPCOMING PLANS</span></li>
+				{#each selectedMenu.secondList.filter(
+					menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
+					as course, index}
+					<ListItem {index} {course} bind:courseSelections />
+				{/each}
+			{/if}
 		</ul>
 	{:else}
 		<h2>No courses to view</h2>
@@ -199,7 +184,7 @@
 	input[type="button"] {
 		padding: 0.5rem 1rem;
 		color: #fff;
-		background: var(--color-green);
+		background: var(--btn-green);
 		border-radius: 5px;
 	}
 
@@ -215,7 +200,7 @@
 		background-repeat: no-repeat;
 		background-position: 90%;
 		background-size: 0.8rem;
-		padding-right: 2rem;
+		padding: 0.5rem 2rem 0.5rem 0;
 	}
 
 	/* ul */
@@ -225,64 +210,20 @@
 		margin: 0;
 	}
 
-	li {
-		display: flex;
-		flex-direction: column;
-		background-color: #fff;
-		margin-bottom: 1rem;
-		padding: 1rem;
-		border-radius: 5px;
-		border: 1px solid #e8e8e8;
+	/* clunky? brute force solution */
+	li.message {
+		list-style-type: none;
+		text-align: center;
+		border-bottom: 1px solid #d4d4d4; 
+   	line-height: 0.1em;
+		margin: 2rem 0;
 	}
 
-	li > div:first-child {
-		display: inline-flex;
-	}
-
-	li > div:first-child > img {
-		width: 100%;
-		height: 100px;
-		margin: 0 1rem;
-		border-radius: 5px;
-		object-fit: cover;
-	}
-
-	li > div:first-child > input[type="checkbox"] {
-		margin-bottom: auto;
-	}
-
-	h2 {
-		font-size: 1.2rem;
+	li.message > span {
+		padding: 0 1rem;
+		background: var(--c-primary);
+		font-size: 0.75rem;
 		font-weight: 600;
-		margin-bottom: 0;
-	}
-
-	h2 > span {
-		margin-left: 0.5rem;
-		font-size: 0.8rem;
-		padding: 2px 10px;
-		border-radius: 2px;
-	}
-
-	li > div:last-child > p {
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;  
-		overflow: hidden;
-		margin-top: 10px;
-	}
-
-	li > div:last-child > span {
-		display: flex;
-		align-items: center;
-		color: #6b546a;
-		font-weight: 600;
-	}
-
-	li > div:last-child > span > img {
-		width: 15px;
-		height: 15px;
-		margin-right: 0.5rem;
 	}
 
 	@media (min-width: 480px) {
@@ -325,21 +266,6 @@
 		input[type="radio"]:checked + label::after {
 			transition: width 0.2s linear;
 			width: 100%;
-		}
-
-		/* ul */
-
-		li {
-			flex-direction: row;
-		}
-
-		li > div:first-child {
-			display: inherit;
-		}
-
-		li > div:first-child > img {
-			width: 200px;
-			height: 150px;
 		}
 	}
 </style>
