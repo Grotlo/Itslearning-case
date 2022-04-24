@@ -1,10 +1,17 @@
 :root {
+	/* colors */
 	--tag-yellow: #FEEBBB;
 	--tag-light-blue: #C4ECFF;
 	--tag-green: #C0E8DC;
 	--tag-red: #F6C8C5;
 
-	--color-green: #008859;
+	--btn-green: #008859;
+
+	--c-primary: #f4f4f4;
+	--c-constrast: #3e3e3e;
+
+	/* font weights */
+	--w-bold: 600;
 }
 
 html, body {
@@ -14,12 +21,12 @@ html, body {
 }
 
 body {
-	color: #3e3e3e;
-	background-color: #f4f4f4;
+	color: var(--c-constrast);
+	background-color: var(--c-primary);
 	margin: 0;
 	padding: 8px;
 	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Calibri", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 a {

@@ -3,12 +3,9 @@
 	import { courses } from "./courses.js";
 	import ListItem from "./ListItem.svelte";
 
-	const withoutDatesCourses = [];
-	const pastCourses = [];
-	const upcomingCourses = [];
-	const currentCourses = [];
+	const withoutDatesCourses = [], pastCourses = [], upcomingCourses = [], currentCourses = [];
 
-	const todaysDate = new Date();
+	const todaysDate = new Date().toJSON();
 
 	courses.forEach(course => {
 		if (course.endDate < todaysDate) pastCourses.push(course);
@@ -100,7 +97,7 @@
 
 	h1 {
 		font-size: 1.5rem;
-		font-weight: 600;
+		font-weight: var(--w-bold);
 	}
 
 	/* main > div:first-of-type */
@@ -152,7 +149,7 @@
 	
 	input[type="radio"]:checked + label {
 		color: inherit;
-		font-weight: 600;
+		font-weight: var(--w-bold);
 	}
 
 	input[type="radio"] + label::after,
@@ -223,7 +220,7 @@
 		padding: 0 1rem;
 		background: var(--c-primary);
 		font-size: 0.75rem;
-		font-weight: 600;
+		font-weight: var(--w-bold);
 	}
 
 	@media (min-width: 480px) {

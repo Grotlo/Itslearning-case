@@ -62,7 +62,7 @@
 
 	h2 {
 		font-size: 1.2rem;
-		font-weight: 600;
+		font-weight: var(--w-bold);
 		margin-bottom: 0;
 	}
 
@@ -85,7 +85,7 @@
 		display: flex;
 		align-items: center;
 		color: #6b546a;
-		font-weight: 600;
+		font-weight: var(--w-bold);
 	}
 
 	li > div:last-child > span > img {
