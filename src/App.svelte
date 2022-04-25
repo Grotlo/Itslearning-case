@@ -12,18 +12,15 @@
 
 	const todaysDate = new Date().toJSON();
 
-	let newCourse = {};
-	$: if (Object.keys(newCourse).length) {
-		courses.push(newCourse);
-		sortIntoLists(newCourse);
-	}
-
 	const sortIntoLists = (course) => {
-		if (course.endDate < todaysDate) pastCourses.push(course);
-		if (!course.startDate && !course.endDate) withoutDatesCourses.push(course);
-		if (course.startDate < todaysDate && course.endDate > todaysDate)
-			currentCourses.push(course);
-		if (course.startDate > todaysDate) upcomingCourses.push(course);
+		if (course.startDate && course.endDate) {
+			if (course.endDate < todaysDate) pastCourses.push(course);
+			if (course.startDate < todaysDate && course.endDate > todaysDate)
+				currentCourses.push(course);
+			if (course.startDate > todaysDate) upcomingCourses.push(course);
+		} else {
+			withoutDatesCourses.push(course);
+		}
 	};
 
 	const sortCourses = (courses) =>
@@ -126,7 +123,7 @@
 	{/if}
 
 	{#if planModal}
-		<Modal bind:planModal bind:newCourse />
+		<Modal bind:planModal />
 	{/if}
 </main>
 

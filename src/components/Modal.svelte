@@ -2,9 +2,9 @@
   import { fade } from "svelte/transition";
 
   export let planModal;
-  export let newCourse;
 
-  function handleSubmit(e) {
+  let disabled = false;
+  async function handleSubmit(e) {
     const formData = new FormData(e.target);
 
     const data = {};
@@ -12,28 +12,23 @@
       const [key, value] = field;
       data[key] = value;
     }
-    newCourse = data;
-  }
 
-  let message = "";
-  let disabled = false;
-  // async function onSubmit() {
-  //   try {
-  //     disabled = true;
-  //     await fetch( {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Accept: "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         message,
-  //       }),
-  //     });
-  //   } finally {
-  //     disabled = false;
-  //   }
-  // }
+    try {
+      disabled = true;
+      fetch("http://localhost:8080/courses.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({data}),
+      })
+      alert("Added new plan!");
+    } catch(error) {
+      console.log(error)
+    } finally {
+      disabled = false;
+    }
+  }
 </script>
 
 <div transition:fade={{ duration: 200 }}>
@@ -77,9 +72,6 @@
       id="imgSrc"
       placeholder="Add image link for the course"
     />
-    {#if message}
-      <p>{message}</p>
-    {/if}
     <button type="submit" {disabled}>Add plan</button>
   </form>
 </div>
