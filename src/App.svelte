@@ -1,18 +1,28 @@
 <script>
 	import { onMount } from "svelte";
-	import { courses } from "./courses.js";
 	import ListItem from "./ListItem.svelte";
+	import Modal from "./Modal.svelte";
+
+	let courses = [];
 
 	const withoutDatesCourses = [], pastCourses = [], upcomingCourses = [], currentCourses = [];
 
 	const todaysDate = new Date().toJSON();
 
-	courses.forEach(course => {
+	let newCourse = {};
+	$: if (Object.keys(newCourse).length) {
+		courses.push(newCourse);
+		sortIntoLists(newCourse);
+	}
+
+	const sortIntoLists = (course) => {
 		if (course.endDate < todaysDate) pastCourses.push(course);
 		if (!course.startDate && !course.endDate) withoutDatesCourses.push(course);
 		if (course.startDate < todaysDate && course.endDate > todaysDate) currentCourses.push(course);
 		if (course.startDate > todaysDate) upcomingCourses.push(course);
-	})
+	}
+
+	$: courses.forEach(course => sortIntoLists(course));
 
 	const sortCourses = (courses) => courses.sort((a,b) => a.startDate - b.startDate);
 
@@ -26,9 +36,16 @@
 
 	let searchCourses = "";
 	let courseSelections = [];
+	let planModal = false;
 
 	let load = false;
-	onMount(() => load = true);
+	onMount(async () => {
+		const res = await fetch("courses.json");
+		const data = await res.json();
+
+		courses = data;
+		load = true;
+	});
 </script>
 
 <svelte:head>
@@ -56,7 +73,7 @@
 	</div>
 
 	<div>
-		<input type="button" value="Add plan" />
+		<input type="button" value="Add plan" on:click={() => planModal = true} />
 		<select>
 			<option hidden selected>Actions</option>
 			<option>Edit</option>
@@ -85,6 +102,10 @@
 		</ul>
 	{:else}
 		<h2>No courses to view</h2>
+	{/if}
+
+	{#if planModal}
+		<Modal bind:planModal bind:newCourse />
 	{/if}
 </main>
 
@@ -207,7 +228,6 @@
 		margin: 0;
 	}
 
-	/* clunky? brute force solution */
 	li {
 		list-style-type: none;
 		text-align: center;
@@ -247,7 +267,6 @@
 			background: #fff;
 			margin: 0;
 			border: 2px solid #ccc;
-			color: #acacac;
 		}
 
 		input[type="radio"]:checked + label::after {
