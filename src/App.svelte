@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
-	import ListItem from "./ListItem.svelte";
-	import Modal from "./Modal.svelte";
+	import ListItem from "./components/ListItem.svelte";
+	import Modal from "./components/Modal.svelte";
 
 	let courses = [];
 
@@ -22,8 +22,6 @@
 		if (course.startDate > todaysDate) upcomingCourses.push(course);
 	}
 
-	$: courses.forEach(course => sortIntoLists(course));
-
 	const sortCourses = (courses) => courses.sort((a,b) => a.startDate - b.startDate);
 
 	let menu = [
@@ -34,8 +32,7 @@
 
 	$: selectedMenu = menu[0];
 
-	let searchCourses = "";
-	let courseSelections = [];
+	let searchCourses = "", courseSelections = [];
 	let planModal = false;
 
 	let load = false;
@@ -44,6 +41,9 @@
 		const data = await res.json();
 
 		courses = data;
+
+		courses.forEach(course => sortIntoLists(course));
+
 		load = true;
 	});
 </script>
