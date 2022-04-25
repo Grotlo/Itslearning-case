@@ -4,6 +4,7 @@
   export let index;
   export let course;
   export let courseSelections;
+	// https://github.com/sveltejs/svelte/issues/2308
 
   function formatDate(value) {
 		let date = new Date(value);
