@@ -249,12 +249,13 @@
 	li {
 		list-style-type: none;
 		text-align: center;
-		border-bottom: 1px solid #d4d4d4;
+		border-bottom: 2px solid #e4e4e4;
 		line-height: 0.1em;
 		margin: 2rem 0;
 	}
 
 	li > span {
+		color: #837188;
 		padding: 0 1rem;
 		background: var(--c-primary);
 		font-size: 0.75rem;
@@ -285,6 +286,7 @@
 			background: #fff;
 			margin: 0;
 			border: 2px solid #ccc;
+			border-radius: 4px;
 		}
 
 		input[type="radio"]:checked + label::after {

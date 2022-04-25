@@ -7,8 +7,9 @@
 	// https://github.com/sveltejs/svelte/issues/2308
 
   function formatDate(value) {
-		let date = new Date(value);
-    return date.getDate() + " " + date.toLocaleString('default', { month: 'short' });
+		const date = new Date(value);
+		const month = date.toLocaleString('default', { month: 'short' });
+    return date.getDate() + " " + month.charAt(0).toUpperCase() + month.substring(1);
 	}
 </script>
 
@@ -52,7 +53,7 @@
 	li > div:first-child > img {
 		width: 100%;
 		height: 100px;
-		margin: 0 1rem;
+		margin-left: 1rem;
 		border-radius: 5px;
 		object-fit: cover;
 	}
@@ -72,6 +73,10 @@
 		font-size: 0.8rem;
 		padding: 2px 10px;
 		border-radius: 2px;
+	}
+
+	li > div:last-child {
+		padding: 1rem;
 	}
 
 	li > div:last-child > p {
@@ -109,6 +114,11 @@
 		li > div:first-child > img {
 			width: 200px;
 			height: 150px;
+			margin: 0 1rem;
+		}
+
+		li > div:last-child {
+			padding: 0;
 		}
   }
 </style>
