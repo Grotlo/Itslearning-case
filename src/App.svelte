@@ -5,7 +5,10 @@
 
 	let courses = [];
 
-	const withoutDatesCourses = [], pastCourses = [], upcomingCourses = [], currentCourses = [];
+	const withoutDatesCourses = [],
+		pastCourses = [],
+		upcomingCourses = [],
+		currentCourses = [];
 
 	const todaysDate = new Date().toJSON();
 
@@ -18,21 +21,31 @@
 	const sortIntoLists = (course) => {
 		if (course.endDate < todaysDate) pastCourses.push(course);
 		if (!course.startDate && !course.endDate) withoutDatesCourses.push(course);
-		if (course.startDate < todaysDate && course.endDate > todaysDate) currentCourses.push(course);
+		if (course.startDate < todaysDate && course.endDate > todaysDate)
+			currentCourses.push(course);
 		if (course.startDate > todaysDate) upcomingCourses.push(course);
-	}
+	};
 
-	const sortCourses = (courses) => courses.sort((a,b) => a.startDate - b.startDate);
+	const sortCourses = (courses) =>
+		courses.sort((a, b) => a.startDate - b.startDate);
+
+	const filterCourse = (course, searchTerm) =>
+		course.name.toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1;
 
 	let menu = [
-		{ entry: "Current", list: sortCourses(currentCourses), secondList: sortCourses(upcomingCourses) },
+		{
+			entry: "Current",
+			list: sortCourses(currentCourses),
+			secondList: sortCourses(upcomingCourses),
+		},
 		{ entry: "Past", list: sortCourses(pastCourses) },
-		{ entry: "Without date", list: sortCourses(withoutDatesCourses) }
+		{ entry: "Without date", list: sortCourses(withoutDatesCourses) },
 	];
 
 	$: selectedMenu = menu[0];
 
-	let searchCourses = "", courseSelections = [];
+	let searchCourses = "",
+		courseSelections = [];
 	let planModal = false;
 
 	let load = false;
@@ -42,7 +55,7 @@
 
 		courses = data;
 
-		courses.forEach(course => sortIntoLists(course));
+		courses.forEach((course) => sortIntoLists(course));
 
 		load = true;
 	});
@@ -56,24 +69,36 @@
 	<h1>Plans</h1>
 
 	<div>
-		<input type=radio bind:group={selectedMenu} id={menu[0].entry} value={menu[0]}> 
+		<input
+			type="radio"
+			bind:group={selectedMenu}
+			id={menu[0].entry}
+			value={menu[0]}
+		/>
 		<label for={menu[0].entry}>{menu[0].entry}</label>
-		<input type=radio bind:group={selectedMenu} id={menu[1].entry} value={menu[1]}> 
+		<input
+			type="radio"
+			bind:group={selectedMenu}
+			id={menu[1].entry}
+			value={menu[1]}
+		/>
 		<label for={menu[1].entry}>{menu[1].entry}</label>
-		<input type=radio bind:group={selectedMenu} id={menu[2].entry} value={menu[2]}>
+		<input
+			type="radio"
+			bind:group={selectedMenu}
+			id={menu[2].entry}
+			value={menu[2]}
+		/>
 		<label for={menu[2].entry}>{menu[2].entry}</label>
 
 		<div>
 			<img src="icons/search.svg" alt="search icon" />
-			<input
-				type="text"
-				placeholder="Search"
-				bind:value={searchCourses} />
+			<input type="text" placeholder="Search" bind:value={searchCourses} />
 		</div>
 	</div>
 
 	<div>
-		<input type="button" value="Add plan" on:click={() => planModal = true} />
+		<input type="button" value="Add plan" on:click={() => (planModal = true)} />
 		<select>
 			<option hidden selected>Actions</option>
 			<option>Edit</option>
@@ -84,18 +109,14 @@
 	{#if (selectedMenu.list || selectedMenu.secondList) && load}
 		<ul>
 			{#if selectedMenu.list}
-				{#each selectedMenu.list.filter(
-					menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
-					as course, index}
+				{#each selectedMenu.list.filter( (list) => filterCourse(list, searchCourses) ) as course, index}
 					<ListItem {index} {course} bind:courseSelections />
 				{/each}
 			{/if}
 
 			{#if selectedMenu.secondList}
 				<li><span>UPCOMING PLANS</span></li>
-				{#each selectedMenu.secondList.filter(
-					menu => menu.name.toUpperCase().indexOf(searchCourses.toUpperCase()) !== -1) 
-					as course, index}
+				{#each selectedMenu.secondList.filter( (list) => filterCourse(list, searchCourses) ) as course, index}
 					<ListItem {index} {course} bind:courseSelections />
 				{/each}
 			{/if}
@@ -153,7 +174,7 @@
 		opacity: 1;
 	}
 
-	input[type=radio] {
+	input[type="radio"] {
 		display: none;
 	}
 
@@ -167,7 +188,7 @@
 	label:hover {
 		cursor: pointer;
 	}
-	
+
 	input[type="radio"]:checked + label {
 		color: inherit;
 		font-weight: var(--w-bold);
@@ -175,7 +196,7 @@
 
 	input[type="radio"] + label::after,
 	input[type="radio"]:checked + label::after {
-		content: '';
+		content: "";
 		display: block;
 		position: absolute;
 		height: 0;
@@ -231,8 +252,8 @@
 	li {
 		list-style-type: none;
 		text-align: center;
-		border-bottom: 1px solid #d4d4d4; 
-   	line-height: 0.1em;
+		border-bottom: 1px solid #d4d4d4;
+		line-height: 0.1em;
 		margin: 2rem 0;
 	}
 
