@@ -13,9 +13,11 @@
       data[key] = value;
     }
 
+    const url = "link to create API endpoint";
+
     try {
       disabled = true;
-      fetch("http://localhost:8080/courses.json", {
+      fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,50 +33,52 @@
   }
 </script>
 
-<div transition:fade={{ duration: 200 }}>
-  <input type="button" value="Close" on:click={() => (planModal = false)} />
-  <form on:submit|preventDefault={handleSubmit}>
-    <h2>Add a new course</h2>
-    <label for="name">Name for course *</label>
-    <input
-      type="text"
-      name="name"
-      id="name"
-      placeholder="Add name for course"
-      required
-    />
-    <label for="name">Tag</label>
-    <input type="text" name="tag" id="tag" placeholder="Add tag for course" />
-    <span>Tag color</span>
-    <select name="tagColor" id="tagColor">
-      <option value="" selected hidden>Choose tag color</option>
-      <option value="yellow">Yellow</option>
-      <option value="light-blue">Light blue</option>
-      <option value="red">Red</option>
-      <option value="green">Green</option>
-    </select>
-    <label for="details">Details for the course *</label>
-    <input
-      type="text"
-      name="details"
-      id="details"
-      placeholder="Add descriptive details for the course"
-      required
-    />
-    <label for="startDate">Start date for course</label>
-    <input type="date" name="startDate" id="startDate" />
-    <label for="endDate">End date for course</label>
-    <input type="date" name="endDate" id="endDate" />
-    <label for="imgSrc">Image for course</label>
-    <input
-      type="text"
-      name="imgSrc"
-      id="imgSrc"
-      placeholder="Add image link for the course"
-    />
-    <button type="submit" {disabled}>Add plan</button>
-  </form>
-</div>
+{#if planModal}
+  <div transition:fade={{ duration: 200 }}>
+    <input type="button" value="Close" on:click={() => (planModal = false)} />
+    <form on:submit|preventDefault={handleSubmit}>
+      <h2>Add a new course</h2>
+      <label for="name">Name for course *</label>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Add name for course"
+        required
+      />
+      <label for="name">Tag</label>
+      <input type="text" name="tag" id="tag" placeholder="Add tag for course" />
+      <span>Tag color</span>
+      <select name="tagColor" id="tagColor">
+        <option value="" selected hidden>Choose tag color</option>
+        <option value="yellow">Yellow</option>
+        <option value="light-blue">Light blue</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+      </select>
+      <label for="details">Details for the course *</label>
+      <input
+        type="text"
+        name="details"
+        id="details"
+        placeholder="Add descriptive details for the course"
+        required
+      />
+      <label for="startDate">Start date for course</label>
+      <input type="date" name="startDate" id="startDate" />
+      <label for="endDate">End date for course</label>
+      <input type="date" name="endDate" id="endDate" />
+      <label for="imgSrc">Image for course</label>
+      <input
+        type="text"
+        name="imgSrc"
+        id="imgSrc"
+        placeholder="Add image link for the course"
+      />
+      <button type="submit" {disabled}>Add plan</button>
+    </form>
+  </div>
+{/if}
 
 <style>
   div {

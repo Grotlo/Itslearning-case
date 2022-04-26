@@ -122,9 +122,7 @@
 		<h2>No courses to view</h2>
 	{/if}
 
-	{#if planModal}
-		<Modal bind:planModal />
-	{/if}
+	<Modal bind:planModal />
 </main>
 
 <style>
